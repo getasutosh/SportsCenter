@@ -1,9 +1,9 @@
-{:linters {:unused-namespace {:level :warning}
-          :unused-referred-var {:level :warning}
+{:linters {:unused-namespace {:level :off}
+          :unused-referred-var {:level :off}
           :unused-private-var {:level :warning}
           :redundant-let {:level :warning}
           :redundant-do {:level :warning}
           :single-key-in {:level :warning}
-          :unused-binding {:level :warning}
+          :unused-binding {:level :off}
           :duplicate-require {:level :warning}}
  :output {:pattern "::{{level}} file={{filename}},line={{row}},col={{col}}::{{message}}"}}

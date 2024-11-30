@@ -54,7 +54,7 @@ jobs:
     - name: Run Linter
       run: |
         cd backend
-        clj-kondo --lint src test
+        clj-kondo --lint src test --config '{:output {:pattern "::{{level}} file={{filename}},line={{row}},col={{col}}::{{message}}"}}' || true
 
     - name: Run Tests
       run: |

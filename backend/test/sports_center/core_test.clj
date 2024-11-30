@@ -1,18 +1,17 @@
 (ns sports-center.core-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [clojure.test :as t]
             [sports-center.core :as core]
-            [clojure.data.json :as json]))
+            [ring.mock.request :as mock]))
 
-(deftest app-test
-  (testing "Health check endpoint"
+(t/deftest app-test
+  (t/testing "Health check endpoint"
     (let [response (core/app (mock/request :get "/api/health"))]
-      (is (= 200 (:status response)))
-      (is (= {:status "ok"} (json/read-str (:body response) :key-fn keyword))))))
+      (t/is (= 200 (:status response)))
+      (t/is (= {:status "ok"} (json/read-str (:body response) :key-fn keyword))))))
 
-(deftest health-check-test
-  (testing "Health check endpoint"
+(t/deftest health-check-test
+  (t/testing "Health check endpoint"
     (let [response (core/app (mock/request :get "/health"))]
-      (is (= 200 (:status response)))
-      (is (= "healthy" (get-in response [:body :status])))
-      (is (string? (get-in response [:body :timestamp]))))))
+      (t/is (= 200 (:status response)))
+      (t/is (= "healthy" (get-in response [:body :status])))
+      (t/is (string? (get-in response [:body :timestamp]))))))
