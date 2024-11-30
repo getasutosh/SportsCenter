@@ -11,11 +11,9 @@
 (def app
   (-> (ring/ring-handler
        (ring/router
-        [["/api"
-          ["/health" {:get health-handler}]
-          ]]))
+        [["/health" {:get health-handler}]]))
       wrap-json-response
-      wrap-json-body))
+      (wrap-json-body {:keywords? true})))
 
 (defn start-server [port]
   (run-jetty app {:port port :join? false}))
