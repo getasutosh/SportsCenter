@@ -137,6 +137,13 @@ This document outlines the development plan for the SportsCenter platform, focus
    - Test authentication flow
    - Implement security monitoring
 
+## Future Enhancements (Postponed)
+### Elasticsearch Integration
+- Full-text search capabilities
+- Advanced search features
+- Analytics and reporting
+- Performance monitoring dashboards
+
 ## Testing Strategy
 
 ### Backend Testing
