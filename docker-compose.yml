@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # Application Services
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - POSTGRES_HOST=postgres
+      - MONGODB_URI=mongodb://mongodb:27017/sportscenter
+      - REDIS_URL=redis://redis:6379
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - NEO4J_URI=bolt://neo4j:7687
+      - INFLUXDB_URL=http://influxdb:8086
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+      - elasticsearch
+      - neo4j
+      - influxdb
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+  # Databases
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_DB=sportscenter
+      - POSTGRES_USER=sports_user
+      - POSTGRES_PASSWORD=sports_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  mongodb:
+    image: mongo:5
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+
+  neo4j:
+    image: neo4j:4.4
+    environment:
+      - NEO4J_AUTH=neo4j/sports_password
+    volumes:
+      - neo4j_data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+
+  influxdb:
+    image: influxdb:2.0
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=sports_admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=sports_password
+      - DOCKER_INFLUXDB_INIT_ORG=sportscenter
+      - DOCKER_INFLUXDB_INIT_BUCKET=metrics
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    ports:
+      - "8086:8086"
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+  elasticsearch_data:
+  neo4j_data:
+  influxdb_data:
