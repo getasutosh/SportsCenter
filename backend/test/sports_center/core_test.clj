@@ -9,3 +9,10 @@
     (let [response (core/app (mock/request :get "/api/health"))]
       (is (= 200 (:status response)))
       (is (= {:status "ok"} (json/read-str (:body response) :key-fn keyword))))))
+
+(deftest health-check-test
+  (testing "Health check endpoint"
+    (let [response (core/app (mock/request :get "/health"))]
+      (is (= 200 (:status response)))
+      (is (= "healthy" (get-in response [:body :status])))
+      (is (string? (get-in response [:body :timestamp]))))))

@@ -4,12 +4,16 @@
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [sports-center.routes :as routes]))
 
+(defn health-handler [_]
+  {:status 200
+   :body {:status "healthy"
+          :timestamp (java.time.Instant/now)}})
+
 (def app
   (-> (ring/ring-handler
        (ring/router
         [["/api"
-          ["/health" {:get {:handler (fn [_] {:status 200
-                                             :body {:status "ok"}})}}]
+          ["/health" {:get health-handler}]
           routes/auth-routes
           routes/user-routes]]))
       (wrap-json-response)
