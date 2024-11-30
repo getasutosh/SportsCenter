@@ -1,0 +1,81 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: sports_center_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Install Clojure Tools
+      uses: DeLaGuardo/setup-clojure@12.1
+      with:
+        cli: latest
+        
+    - name: Cache Maven packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/deps.edn') }}
+        restore-keys: ${{ runner.os }}-m2
+
+    - name: Run Tests
+      run: |
+        cd backend
+        clojure -M:test
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/sports_center_test
+        JWT_SECRET: test-secret
+
+    - name: Run Linter
+      run: |
+        cd backend
+        clojure -M:lint
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: |
+        cd backend
+        docker build -t sports-center-backend .
+      
+    # Add deployment steps here when ready
+    # - name: Deploy to production
+    #   run: echo "Deploy to production"
