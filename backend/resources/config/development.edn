@@ -1,0 +1,29 @@
+{:server {:port #long #env PORT
+         :host "0.0.0.0"}
+ 
+ :database {:postgres {:host #env POSTGRES_HOST
+                      :port #long #env POSTGRES_PORT
+                      :name #env POSTGRES_DB
+                      :user #env POSTGRES_USER
+                      :password #env POSTGRES_PASSWORD}
+            
+            :mongodb {:uri #env MONGODB_URI}
+            
+            :redis {:host #env REDIS_HOST
+                   :port #long #env REDIS_PORT}
+            
+            :influxdb {:url #env INFLUXDB_URL
+                      :org #env INFLUXDB_ORG
+                      :bucket #env INFLUXDB_BUCKET
+                      :token #env INFLUXDB_TOKEN}}
+ 
+ :auth {:jwt-secret #env JWT_SECRET
+        :jwt-expiry #long #env JWT_EXPIRY}
+ 
+ :rate-limit {:window #long #env RATE_LIMIT_WINDOW
+              :max-requests #long #env RATE_LIMIT_MAX_REQUESTS}
+ 
+ :websocket {:port #long #env WS_PORT
+             :path #env WS_PATH}
+ 
+ :logging {:level #keyword #env LOG_LEVEL}}
