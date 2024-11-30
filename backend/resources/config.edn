@@ -1,0 +1,62 @@
+{:default
+ {:server {:port #long #or [#env PORT 3000]
+           :host "0.0.0.0"}
+  
+  :database {:postgres {:url #env POSTGRES_URL
+                       :user #env POSTGRES_USER
+                       :password #env POSTGRES_PASSWORD
+                       :max-pool-size 10}
+             
+             :mongodb {:uri #env MONGODB_URI
+                      :database "sports_center"}
+             
+             :redis {:url #env REDIS_URL}
+             
+             :elasticsearch {:url #env ELASTICSEARCH_URL
+                           :index-prefix "sports_center"}
+             
+             :neo4j {:uri #env NEO4J_URI
+                    :user #env NEO4J_USER
+                    :password #env NEO4J_PASSWORD}
+             
+             :influxdb {:url #env INFLUXDB_URL
+                       :token #env INFLUXDB_TOKEN
+                       :org #env INFLUXDB_ORG
+                       :bucket "sports_center"}}
+  
+  :auth {:jwt-secret #env JWT_SECRET
+         :token-expiry 86400  ; 24 hours in seconds
+         :refresh-token-expiry 2592000}  ; 30 days in seconds
+  
+  :cors {:allowed-origins #{"http://localhost:3000"
+                           "http://localhost:8080"}
+         :allowed-methods #{:get :post :put :delete :options}
+         :allowed-headers #{"Content-Type" "Authorization"}
+         :exposed-headers #{"Content-Type"}
+         :max-age 3600}
+  
+  :logging {:level :info
+           :appenders {:println {:enabled? true}
+                      :spit {:enabled? true
+                            :filename "logs/sports-center.log"}}}}
+ 
+ :dev [:default
+       {:logging {:level :debug}
+        :cors {:allowed-origins #{"*"}}}]
+ 
+ :test [:default
+        {:database {:postgres {:url "jdbc:postgresql://localhost:5432/sports_center_test"}
+                   :mongodb {:uri "mongodb://localhost:27017/sports_center_test"}
+                   :redis {:url "redis://localhost:6379/1"}
+                   :elasticsearch {:url "http://localhost:9200"
+                                 :index-prefix "sports_center_test"}
+                   :neo4j {:uri "bolt://localhost:7687"
+                          :user "neo4j"
+                          :password "test"}
+                   :influxdb {:url "http://localhost:8086"
+                             :bucket "sports_center_test"}}}]
+ 
+ :prod [:default
+        {:logging {:level :warn
+                  :appenders {:println {:enabled? false}
+                            :spit {:enabled? true}}}}]}

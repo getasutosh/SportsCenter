@@ -1,0 +1,29 @@
+#kaocha/v1
+{:tests [{:id :unit
+          :source-paths ["src"]
+          :test-paths ["test"]
+          :ns-patterns [".*-test$"]
+          :skip-meta [:integration]}
+         
+         {:id :integration
+          :source-paths ["src"]
+          :test-paths ["test"]
+          :ns-patterns [".*-test$"]
+          :focus-meta [:integration]}]
+
+ :plugins [:kaocha.plugin/print-invocations
+          :kaocha.plugin/profiling
+          :kaocha.plugin/notifier]
+
+ :kaocha.plugin.notifier/command "terminal-notifier"
+ :kaocha.plugin.notifier/title "Sports Center Tests"
+
+ :reporter kaocha.report/documentation
+
+ :capture-output? true
+ :color? true
+ :watch? false
+ :fail-fast? false
+
+ :bindings {kaocha.stacktrace/*stacktrace-filters*
+           ["java." "clojure." "nrepl." "kaocha."]}}
