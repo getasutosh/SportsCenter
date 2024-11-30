@@ -5,7 +5,7 @@ FROM clojure:temurin-17-alpine AS builder
 WORKDIR /app
 
 # Copy dependency files
-COPY deps.edn ./
+COPY deps.edn build.clj ./
 
 # Download dependencies
 RUN clojure -P
@@ -22,7 +22,7 @@ FROM eclipse-temurin:17-alpine
 WORKDIR /app
 
 # Copy the uberjar from builder stage
-COPY --from=builder /app/target/sports-center-standalone.jar ./app.jar
+COPY --from=builder /app/target/sports-center.jar ./app.jar
 
 # Expose port
 EXPOSE 3000

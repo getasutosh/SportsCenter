@@ -1,11 +1,9 @@
 (ns build
   (:require [clojure.tools.build.api :as b]))
 
-(def lib 'sports-center/backend)
-(def version "0.1.0")
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))
-(def uber-file (format "target/%s-standalone.jar" (name lib)))
+(def uber-file "target/sports-center.jar")
 
 (defn clean [_]
   (b/delete {:path "target"}))
